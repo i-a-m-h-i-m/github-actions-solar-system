@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - 'feature/*'
+
 env:
   MONGO_URI: mongodb+srv://supercluster.d83jj.mongodb.net/superData
   MONGO_USERNAME: superuser
@@ -13,57 +14,59 @@ env:
     
 jobs:
   unit-testing:
-        name: Unit Testing
-        runs-on: ubuntu-latest
-        steps:
-        - name: Checkout Repository
-          uses: actions/checkout@v4
+    name: Unit Testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-        - name: Setup NodeJS Version
-          uses: actions/setup-node@v4
-          with:
-            node-version: 20
+      - name: Setup NodeJS Version
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-        - name: Cache NPM dependencies
-          uses: actions/cache@v4
-          with:
-            path: ~/.npm
-    key: '${{ runner.os }}-node-modules-${{ hashFiles(''package-lock.json'') }}'
+      - name: Cache NPM dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: '${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}'
     
-        - name: Install Dependencies
-          run: npm install
+      - name: Install Dependencies
+        run: npm install
     
-        - name: Unit Testing
-          run: npm test
+      - name: Unit Testing
+        run: npm test
           
-        - name: Archive Test Result
-          if: always()
-          uses: actions/upload-artifact@v4
-          with:
-            name: Mocha-Test-Result
-            path: test-results.xml
-    code-coverage: 
-        name: code-coverage
-        runs-on: ubuntu-latest
-        steps:
-        - name: Checkout Repository
-          uses: actions/checkout@v4
+      - name: Archive Test Result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mocha-Test-Result
+          path: test-results.xml
+
+  code-coverage: 
+    name: Code Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
           
-        - name: Setup NodeJS
-          uses: actions/setup-node@v4
-          with:
-            node-version: 18
+      - name: Setup NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
   
-        - name: Install NodeJS Dependencies
-          run: npm install
+      - name: Install NodeJS Dependencies
+        run: npm install
 
-        - name: Run Code Average CMD
-          continue-on-error: true
-          run: npm run coverage
+      - name: Run Code Coverage Command
+        continue-on-error: true
+        run: npm run coverage
 
-        - name: Upload code coverage report
-          uses: actions/upload-artifact@v4
-          with:
-            name: Code-Coverage-Result
-            path: coverage
-            retention-days: 5    
+      - name: Upload Code Coverage Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: Code-Coverage-Result
+          path: coverage
+          retention-days: 5
+
