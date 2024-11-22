@@ -139,7 +139,7 @@ jobs:
     - name: check
       run: cat kubernetes/development/*.yaml
  
-  integration-testing:
+  integration-test:
     needs: dev-deploy
     uses: ./.github/workflows/reusable-workflow.yml
     with:
